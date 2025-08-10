@@ -1,19 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
 import httpstatus from "http-status-codes"
+import { sendResponse } from "../../utils/sendResponse";
 
-const createUser = async (req: Request, res: Response,next:NextFunction) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
+
         console.log(req.body);
         const create = await userService.createUser(req.body)
-        res.status(httpstatus.CREATED).json({
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
             message: "user created successfully",
-            user: create
+            data: create
         })
 
     } catch (err) {
-       next(err)
+        next(err)
     }
 
 }
