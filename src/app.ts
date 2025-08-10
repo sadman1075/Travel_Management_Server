@@ -1,9 +1,15 @@
 import express from "express"
+import cors from "cors";
+import { userRoutes } from "./app/module/user/user.route";
 
+const app = express()
 
-const app=express()
+app.use(express.json())
+app.use(cors())
 
-app.get("/",async(req,res)=>{
+app.use("/api/v1/user", userRoutes)
+
+app.get("/", async (req, res) => {
     res.send("server is running man")
 })
 
