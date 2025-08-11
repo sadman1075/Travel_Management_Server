@@ -21,8 +21,25 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
 }
 
+const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const allUsers = await userService.getAllUser()
+        
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user successfully retrived ",
+            data: allUsers
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 
 
 export const userController = {
-    createUser
+    createUser,
+    getAllUser
 }

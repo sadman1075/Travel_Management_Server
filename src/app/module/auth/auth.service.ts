@@ -35,6 +35,11 @@ const credetialsLogin = async (payload: Partial<IUser>) => {
 
 
 
+
+
+
+
+
 export const authService = {
     credetialsLogin
 }

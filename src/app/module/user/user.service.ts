@@ -16,7 +16,13 @@ const createUser = async (payload: IUser) => {
     return create
 }
 
+const getAllUser = async () => {
+    const allUsers = await User.find({})
+    return allUsers
+}
+
 
 export const userService = {
-    createUser
+    createUser,
+    getAllUser
 }
