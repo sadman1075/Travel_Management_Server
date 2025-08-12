@@ -21,7 +21,7 @@ const credetialsLogin = async (req: Request, res: Response, next: NextFunction) 
 const getNewAccessToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const refreshToken=req.cookies.refreshToken;
+        const refreshToken=req.cookies.refreshToken
         const tokenInfo=await authService.getNewAccessToken(refreshToken)
 
         
