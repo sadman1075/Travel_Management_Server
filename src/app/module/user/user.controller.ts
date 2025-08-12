@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
 import httpstatus from "http-status-codes"
 import { sendResponse } from "../../utils/sendResponse";
+import { JwtPayload } from "jsonwebtoken";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -23,13 +24,16 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        console.log(req.body);
-        const create = await userService.createUser(req.body)
+        const userId=req.params.id ;
+        const payload=req.body;
+        const decodedToken=req.headers.authorization
+        
+        const update = await userService.updateUser(userId,payload,decodedToken)
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
             message: "user created successfully",
-            data: create
+            data: update
         })
 
     } catch (err) {

@@ -19,6 +19,12 @@ const createUser = async (payload: IUser) => {
 }
 
 const updateUser = async (payload: IUser, userId: string, decodedToken: JwtPayload) => {
+    const isUserExist = await User.findOne({ email: payload.email })
+    if (!isUserExist) {
+        throw new AppError(httpstatus.FORBIDDEN, "there is no user in this email");
+
+    }
+
     if (payload.role) {
         if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
             throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
