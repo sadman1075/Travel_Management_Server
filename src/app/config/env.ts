@@ -12,13 +12,18 @@ interface EnvConfig {
     SUPER_ADMIN_PASSWORD:string,
     BCRYPT_SALT_ROUND:string,
     JWT_REFRESH_SECRET:string,
-    JWT_REFRESH_EXPIRES:string
+    JWT_REFRESH_EXPIRES:string,
+    GOOGLE_CALLBACK_URL:string,
+    GOOGLE_CLIENT_SECRET:string,
+    GOOGLE_CLIENT_ID:string,
+    EXPRESS_SESSION_SECRET:string,
+    FRONTEND_URL:string
     
 }
 
 
 const loadEnvVariables = (): EnvConfig => {
-    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV","JWT_ACCESS_EXPIRES","JWT_ACCESS_SECRET","SUPER_ADMIN_EMAIL","SUPER_ADMIN_PASSWORD","BCRYPT_SALT_ROUND","JWT_REFRESH_EXPIRES","JWT_REFRESH_SECRET"]
+    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV","JWT_ACCESS_EXPIRES","JWT_ACCESS_SECRET","SUPER_ADMIN_EMAIL","SUPER_ADMIN_PASSWORD","BCRYPT_SALT_ROUND","JWT_REFRESH_EXPIRES","JWT_REFRESH_SECRET","GOOGLE_CALLBACK_URL","GOOGLE_CLIENT_SECRET","GOOGLE_CLIENT_ID","EXPRESS_SESSION_SECRET","FRONTEND_URL"]
     requiredEnvVariables.forEach(key => {
         if (!process.env[key]) {
             throw new Error(`Missing Required environment variable ${key}`)
@@ -35,7 +40,12 @@ const loadEnvVariables = (): EnvConfig => {
         SUPER_ADMIN_PASSWORD:process.env.SUPER_ADMIN_PASSWORD as string,
         BCRYPT_SALT_ROUND:process.env.BCRYPT_SALT_ROUND as string,
         JWT_REFRESH_SECRET:process.env.JWT_REFRESH_SECRET as string,
-        JWT_REFRESH_EXPIRES:process.env.JWT_REFRESH_EXPIRES as string
+        JWT_REFRESH_EXPIRES:process.env.JWT_REFRESH_EXPIRES as string,
+        GOOGLE_CALLBACK_URL:process.env.GOOGLE_CALLBACK_URL as string,
+        GOOGLE_CLIENT_SECRET:process.env.GOOGLE_CLIENT_SECRET as string,
+        GOOGLE_CLIENT_ID:process.env.GOOGLE_CLIENT_ID as string,
+        EXPRESS_SESSION_SECRET:process.env.ExPRESS_SESSION_SECRET as string,
+        FRONTEND_URL:process.env.FRONtEND_URL as string
 
     }
 
