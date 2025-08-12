@@ -59,7 +59,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
-            message: "user created successfully",
+            message: "user logout successfully",
             data: null
         })
 
