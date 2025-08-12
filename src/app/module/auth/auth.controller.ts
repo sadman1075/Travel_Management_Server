@@ -18,8 +18,29 @@ const credetialsLogin = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
+const getNewAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const refreshToken=req.cookies.refreshToken;
+        const tokenInfo=await authService.getNewAccessToken(refreshToken)
+
+        
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user created successfully",
+            data: tokenInfo
+        })
+
+    } catch (err) {
+        next(err)
+    }
+
+}
+
 
 
 export const authController = {
-    credetialsLogin
+    credetialsLogin,
+    getNewAccessToken
 }

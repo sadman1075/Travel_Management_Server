@@ -23,6 +23,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
 }
+
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -67,5 +68,6 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
 export const userController = {
     createUser,
     getAllUser,
-    updateUser
+    updateUser,
+    
 }
