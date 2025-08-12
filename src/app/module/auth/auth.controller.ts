@@ -8,7 +8,7 @@ const credetialsLogin = async (req: Request, res: Response, next: NextFunction) 
 
         const loginInfo = await authService.credetialsLogin(req.body)
 
-        setAuthCookie(res,loginInfo)
+        setAuthCookie(res, loginInfo)
 
         sendResponse(res, {
             success: true,
@@ -24,10 +24,10 @@ const credetialsLogin = async (req: Request, res: Response, next: NextFunction) 
 const getNewAccessToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const refreshToken=req.cookies.refreshToken
-        const tokenInfo=await authService.getNewAccessToken(refreshToken)
+        const refreshToken = req.cookies.refreshToken
+        const tokenInfo = await authService.getNewAccessToken(refreshToken)
 
-        
+
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
@@ -40,10 +40,39 @@ const getNewAccessToken = async (req: Request, res: Response, next: NextFunction
     }
 
 }
+const logout = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        })
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        })
+
+
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user created successfully",
+            data: null
+        })
+
+    } catch (err) {
+        next(err)
+    }
+
+}
 
 
 
 export const authController = {
     credetialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    logout
 }
