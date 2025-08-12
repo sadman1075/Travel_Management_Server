@@ -67,8 +67,9 @@ const getNewAccessToken = async (refreshToken: string) => {
 
 
 const resetPassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
+    
     const user = await User.findById(decodedToken.userId)
-
+    
 
     const isOldPassword = await bcryptjs.compare(oldPassword, user?.password as string)
     if (!isOldPassword) {

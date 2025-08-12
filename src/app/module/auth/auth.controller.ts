@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express"
 import httpstatus from "http-status-codes"
 import { sendResponse } from "../../utils/sendResponse"
 import { authService } from "./auth.service"
 import { setAuthCookie } from "../../utils/setCookie"
+import { JwtPayload } from "jsonwebtoken"
+import { verifyToken } from "../../utils/jwt"
+import { envVars } from "../../config/env"
 const credetialsLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -43,11 +47,19 @@ const getNewAccessToken = async (req: Request, res: Response, next: NextFunction
 const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const oldPassword = req.body.oldPassword
-        const newPassword = req.body.password
-        const decodedToken=req.headers.authorization
+        const newPassword = req.body.newPassword
+        const decodedToken = req.headers.authorization
+        const verifiedToken=verifyToken(decodedToken as string,envVars.JWT_ACCESS_SECRET)
+       
 
-        const updatePassword=await authService.resetPassword(oldPassword,)
 
+        const updatePassword = await authService.resetPassword(oldPassword, newPassword, verifiedToken as JwtPayload)
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user created successfully",
+            data: true
+        })
     } catch (err) {
         next(err)
     }
