@@ -4,11 +4,12 @@ import { userRoutes } from "./app/module/user/user.route";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFoundRoute } from "./app/middlewares/notFoundRoutes";
 import { authRoutes } from "./app/module/auth/auth.route";
-
+import cookieParser from "cookie-parser"
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 
 
 app.use("/api/v1/user", userRoutes)
