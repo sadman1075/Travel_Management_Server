@@ -40,6 +40,19 @@ const getNewAccessToken = async (req: Request, res: Response, next: NextFunction
     }
 
 }
+const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const oldPassword = req.body.oldPassword
+        const newPassword = req.body.password
+        const decodedToken=req.headers.authorization
+
+        const updatePassword=await authService.resetPassword(oldPassword,)
+
+    } catch (err) {
+        next(err)
+    }
+
+}
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -53,8 +66,6 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
             secure: false,
             sameSite: "lax"
         })
-
-
 
         sendResponse(res, {
             success: true,
@@ -74,5 +85,6 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 export const authController = {
     credetialsLogin,
     getNewAccessToken,
+    resetPassword,
     logout
 }

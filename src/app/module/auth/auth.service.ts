@@ -57,10 +57,29 @@ const getNewAccessToken = async (refreshToken: string) => {
     }
     const accessToken = await generateToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRES)
     return {
-        
+
         accessToken: accessToken
-    
+
     }
+
+
+}
+
+
+const resetPassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
+    const user = await User.findById(decodedToken.userId)
+
+
+    const isOldPassword = await bcryptjs.compare(oldPassword, user?.password as string)
+    if (!isOldPassword) {
+        throw new AppError(httpstatus.BAD_REQUEST, "password is not matched")
+
+    }
+
+    user!.password = await bcryptjs.hash(newPassword, Number(envVars.BCRYPT_SALT_ROUND))
+    user!.save()
+
+    return true
 
 
 }
@@ -74,5 +93,6 @@ const getNewAccessToken = async (refreshToken: string) => {
 
 export const authService = {
     credetialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    resetPassword
 }
