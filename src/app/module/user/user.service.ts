@@ -18,12 +18,8 @@ const createUser = async (payload: IUser) => {
     return create
 }
 
-const updateUser = async (payload: IUser, userId: string, decodedToken: JwtPayload) => {
-    const isUserExist = await User.findOne({ email: payload.email })
-    if (!isUserExist) {
-        throw new AppError(httpstatus.FORBIDDEN, "there is no user in this email");
-
-    }
+const updateUser = async (userId: string,payload: IUser, decodedToken: JwtPayload) => {
+  
 
     if (payload.role) {
         if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
@@ -35,6 +31,13 @@ const updateUser = async (payload: IUser, userId: string, decodedToken: JwtPaylo
         }
     }
 
+    const isUserExist = await User.findById(userId)
+    
+    if (!isUserExist) {
+        throw new AppError(httpstatus.FORBIDDEN, "User not found");
+
+    }
+
     if (payload.isActive || payload.isDeleted || payload.isVerified) {
         if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
             throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
@@ -42,11 +45,12 @@ const updateUser = async (payload: IUser, userId: string, decodedToken: JwtPaylo
     }
 
 
-    const hashpassword = await bcryptjs.hash(payload.password as string, Number(envVars.BCRYPT_SALT_ROUND))
+    const hashpassword = await bcryptjs.hash(isUserExist.password as string, Number(envVars.BCRYPT_SALT_ROUND))
     payload.password = hashpassword;
 
     const updateUserInfo = await User.findByIdAndUpdate(userId, payload, { new: true })
-    return updateUserInfo
+    console.log(updateUserInfo);
+    
 }
 
 const getAllUser = async () => {

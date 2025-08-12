@@ -9,5 +9,5 @@ export const userRoutes = Router()
 
 
 userRoutes.post("/register", validateRequest(createUserZodSchema), userController.createUser)
-userRoutes.post("/update-user", validateRequest(updateUserZodSchema), userController.updateUser)
+userRoutes.patch("/:id", validateRequest(updateUserZodSchema),checkAuth(...Object.values(Role)), userController.updateUser)
 userRoutes.get("/all-users",checkAuth(Role.ADMIN,Role.SUPER_ADMIN) , userController.getAllUser)

@@ -3,6 +3,8 @@ import { userService } from "./user.service";
 import httpstatus from "http-status-codes"
 import { sendResponse } from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
+import { verifyToken } from "../../utils/jwt";
+import { envVars } from "../../config/env";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -27,8 +29,10 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
         const userId=req.params.id ;
         const payload=req.body;
         const decodedToken=req.headers.authorization
+        const VerifiedToken=verifyToken(decodedToken as string,envVars.JWT_ACCESS_SECRET)
+
         
-        const update = await userService.updateUser(userId,payload,decodedToken)
+        const update = await userService.updateUser(userId,payload,VerifiedToken as JwtPayload)
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
