@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express"
 import httpstatus from "http-status-codes"
@@ -5,23 +6,41 @@ import { sendResponse } from "../../utils/sendResponse"
 import { authService } from "./auth.service"
 import { setAuthCookie } from "../../utils/setCookie"
 import { JwtPayload } from "jsonwebtoken"
-import { generateToken, verifyToken } from "../../utils/jwt"
+import { verifyToken } from "../../utils/jwt"
 import { envVars } from "../../config/env"
 import AppError from "../../errorHelpers/AppError"
 import { createUserTokens } from "../../utils/userTokens"
+import passport from "passport"
 const credetialsLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        passport.authenticate("local", async (err: any, user: any, info: any) => {
 
-        const loginInfo = await authService.credetialsLogin(req.body)
+            if (err) {
+                return next(err)
+            }
+            if (!user) {
+                return next(err)
+            }
+            const userTokens = await createUserTokens(user)
 
-        setAuthCookie(res, loginInfo)
+            const { password: pass, ...rest } = user.toObject()
 
-        sendResponse(res, {
-            success: true,
-            statusCode: httpstatus.CREATED,
-            message: "user login successfully",
-            data: loginInfo
-        })
+            setAuthCookie(res, userTokens)
+
+            sendResponse(res, {
+                success: true,
+                statusCode: httpstatus.CREATED,
+                message: "user login successfully",
+                data: {
+                    accessToken: userTokens.accessToken,
+                    refreshToken: userTokens.refreshToken,
+                    user: rest
+                }
+            })
+        })(req, res, next)
+
+
+
     } catch (error) {
         next(error)
     }
@@ -97,9 +116,9 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 
 const googleCallBack = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        let redirectTo= req.query.redirectTo? req.query.redirectTo as string : ""
+        let redirectTo = req.query.redirectTo ? req.query.redirectTo as string : ""
         if (redirectTo.startsWith("/")) {
-            redirectTo= redirectTo.slice(1)
+            redirectTo = redirectTo.slice(1)
         }
         const user = req.user;
         console.log("user", user);
