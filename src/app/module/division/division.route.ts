@@ -5,7 +5,7 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import { Role } from "../user/user.interface";
 import { createDivisionSchema, updateDivisionSchema } from "./division.validation";
 
-const divisionRoutes=Router()
+export const divisionRoutes=Router()
 
 
 divisionRoutes.post(
