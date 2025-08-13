@@ -1,3 +1,4 @@
+import { divisionSearchableFields } from "./division.constant";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
