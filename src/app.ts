@@ -7,18 +7,22 @@ import { authRoutes } from "./app/module/auth/auth.route";
 import cookieParser from "cookie-parser"
 import passport from "passport"
 import expressSession from "express-session"
+import { envVars } from "./app/config/env";
+import "./app/config/passport"
 const app = express()
 
-app.use(passport.initialize())
-app.use(passport.session())
+
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
 app.use(expressSession({
-    secret:"",
-    resave:false,
-    saveUninitialized:false
+    secret: "your secret",
+    resave: false,
+    saveUninitialized: false
 }))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 app.use("/api/v1/user", userRoutes)

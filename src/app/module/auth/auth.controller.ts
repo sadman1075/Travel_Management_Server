@@ -5,8 +5,10 @@ import { sendResponse } from "../../utils/sendResponse"
 import { authService } from "./auth.service"
 import { setAuthCookie } from "../../utils/setCookie"
 import { JwtPayload } from "jsonwebtoken"
-import { verifyToken } from "../../utils/jwt"
+import { generateToken, verifyToken } from "../../utils/jwt"
 import { envVars } from "../../config/env"
+import AppError from "../../errorHelpers/AppError"
+import { createUserTokens } from "../../utils/userTokens"
 const credetialsLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -49,8 +51,8 @@ const resetPassword = async (req: Request, res: Response, next: NextFunction) =>
         const oldPassword = req.body.oldPassword
         const newPassword = req.body.newPassword
         const decodedToken = req.headers.authorization
-        const verifiedToken=verifyToken(decodedToken as string,envVars.JWT_ACCESS_SECRET)
-       
+        const verifiedToken = verifyToken(decodedToken as string, envVars.JWT_ACCESS_SECRET)
+
 
 
         const updatePassword = await authService.resetPassword(oldPassword, newPassword, verifiedToken as JwtPayload)
@@ -93,10 +95,33 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 
+const googleCallBack = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const user = req.user;
+        console.log("user", user);
+        if (!user) {
+            throw new AppError(500, "user not found")
+        }
+
+        const tokeninfo = await createUserTokens(user)
+
+
+        setAuthCookie(res, tokeninfo)
+
+        res.redirect(envVars.FRONTEND_URL)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 
 export const authController = {
     credetialsLogin,
     getNewAccessToken,
     resetPassword,
+    googleCallBack,
     logout
 }
