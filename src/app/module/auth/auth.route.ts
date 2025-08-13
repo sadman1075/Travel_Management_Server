@@ -12,6 +12,7 @@ authRoutes.post("/refresh-token", authController.getNewAccessToken)
 authRoutes.post("/logout", authController.logout)
 authRoutes.post("/reset-password", checkAuth(...Object.values(Role)), authController.resetPassword)
 authRoutes.get("/google",(req:Request,res:Response,next:NextFunction)=>{
-    passport.authenticate("google",{scope:["profile","email"]})(req,res,next)
+    const redirect=req.query.redirect||"/"
+    passport.authenticate("google",{scope:["profile","email"],state:redirect as string})(req,res,next)
 })
 authRoutes.get("/google/callback",passport.authenticate("google",{failureRedirect:"/login"}),authController.googleCallBack)

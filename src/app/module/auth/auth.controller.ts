@@ -97,7 +97,10 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 
 const googleCallBack = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
+        let redirectTo= req.query.redirectTo? req.query.redirectTo as string : ""
+        if (redirectTo.startsWith("/")) {
+            redirectTo= redirectTo.slice(1)
+        }
         const user = req.user;
         console.log("user", user);
         if (!user) {
@@ -109,7 +112,7 @@ const googleCallBack = async (req: Request, res: Response, next: NextFunction) =
 
         setAuthCookie(res, tokeninfo)
 
-        res.redirect(envVars.FRONTEND_URL)
+        res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`)
 
     } catch (error) {
         next(error)

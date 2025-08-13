@@ -9,6 +9,8 @@ import passport from "passport"
 import expressSession from "express-session"
 import { envVars } from "./app/config/env";
 import "./app/config/passport"
+
+
 const app = express()
 
 
@@ -16,7 +18,7 @@ app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
 app.use(expressSession({
-    secret: "your secret",
+    secret: envVars.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }))
