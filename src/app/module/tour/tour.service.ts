@@ -169,9 +169,9 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
 
-    if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
-        await Promise.all(payload.deleteImages.map(url => deleteImageFromCLoudinary(url)))
-    }
+    // if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
+    //     await Promise.all(payload.deleteImages.map(url => deleteImageFromCLoudinary(url)))
+    // }
 
     return updatedTour;
 };
