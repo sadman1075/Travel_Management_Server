@@ -10,6 +10,7 @@ import expressSession from "express-session"
 import { envVars } from "./app/config/env";
 import "./app/config/passport"
 import { divisionRoutes } from "./app/module/division/division.route";
+import { tourRoutes } from "./app/module/tour/tour.route";
 
 
 const app = express()
@@ -31,6 +32,7 @@ app.use(passport.session())
 app.use("/api/v1/user", userRoutes)
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/division",divisionRoutes)
+app.use("/api/v1/tour",tourRoutes)
 
 app.get("/", async (req, res) => {
     res.send("server is running man")
