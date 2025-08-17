@@ -7,7 +7,6 @@ import { createTourTypeZodSchema, createTourZodSchema, updateTourZodSchema } fro
 
 export const tourRoutes=Router()
 
-tourRoutes.get("/tour-types", TourController.getAllTourTypes);
 
 tourRoutes.post(
     "/create-tour-type",
@@ -15,6 +14,9 @@ tourRoutes.post(
     validateRequest(createTourTypeZodSchema),
     TourController.createTourType
 );
+
+tourRoutes.get("/tour-types", TourController.getAllTourTypes);
+
 
 tourRoutes.get(
     "/tour-types/:id",
@@ -30,7 +32,7 @@ tourRoutes.patch(
 tourRoutes.delete("/tour-types/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), TourController.deleteTourType);
 
 /* --------------------- TOUR ROUTES ---------------------- */
-tourRoutes.get("/", TourController.getAllTours);
+
 
 tourRoutes.post(
     "/create",
@@ -39,6 +41,8 @@ tourRoutes.post(
     validateRequest(createTourZodSchema),
     TourController.createTour
 );
+tourRoutes.get("/", TourController.getAllTours);
+
 tourRoutes.get(
     "/:slug",
     TourController.getSingleTour
