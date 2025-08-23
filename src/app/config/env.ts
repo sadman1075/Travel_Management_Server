@@ -42,7 +42,7 @@ const loadEnvVariables = (): EnvConfig => {
         "SSL_STORE_PASS",
         "SSL_PAYMENT_API", 
         "SSL_VALIDATION_API",
-         "SSL_SUCCESS_FRONTEND_URL",
+        "SSL_SUCCESS_FRONTEND_URL",
         "SSL_FAIL_FRONTEND_URL",
         "SSL_CANCEL_FRONTEND_URL",
         "SSL_SUCCESS_BACKEND_URL",

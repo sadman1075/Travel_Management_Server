@@ -82,7 +82,7 @@ const createBooking = async (payload: Partial<IBooking>, decodedToken: JwtPayloa
 
         await session.commitTransaction();
         session.endSession()
-console.log(sslPayment);
+        console.log(sslPayment);
         return {
             booking: updatedBooking,
             payment: sslPayment.GatewayPageURL

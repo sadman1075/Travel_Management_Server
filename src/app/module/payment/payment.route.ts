@@ -5,7 +5,7 @@ import { paymentController } from "./payment.controller";
 export const paymentRoutes =Router();
 
 
-// paymentRoutes.post("/init-payment/:bookingId", PaymentController.initPayment);
+paymentRoutes.post("/init-payment/:bookingId", paymentController.initPayment);
 paymentRoutes.post("/success", paymentController.successPayment);
 paymentRoutes.post("/fail", paymentController.failPayment);
 paymentRoutes.post("/cancel", paymentController.cancelPayment);
