@@ -31,16 +31,21 @@ interface EnvConfig {
         SSL_CANCEL_BACKEND_URL: string,
         // SSL_IPN_URL: string
     };
+    CLOUDINARY: {
+        CLOUDINARY_CLOUD_NAME: string;
+        CLOUDINARY_API_KEY: string;
+        CLOUDINARY_API_SECRET: string;
+    };
 
 
 }
 
 
 const loadEnvVariables = (): EnvConfig => {
-    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "JWT_ACCESS_EXPIRES", "JWT_ACCESS_SECRET", "SUPER_ADMIN_EMAIL", "SUPER_ADMIN_PASSWORD", "BCRYPT_SALT_ROUND", "JWT_REFRESH_EXPIRES", "JWT_REFRESH_SECRET", "GOOGLE_CALLBACK_URL", "GOOGLE_CLIENT_SECRET", "GOOGLE_CLIENT_ID", "EXPRESS_SESSION_SECRET", "FRONTEND_URL", 
+    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "JWT_ACCESS_EXPIRES", "JWT_ACCESS_SECRET", "SUPER_ADMIN_EMAIL", "SUPER_ADMIN_PASSWORD", "BCRYPT_SALT_ROUND", "JWT_REFRESH_EXPIRES", "JWT_REFRESH_SECRET", "GOOGLE_CALLBACK_URL", "GOOGLE_CLIENT_SECRET", "GOOGLE_CLIENT_ID", "EXPRESS_SESSION_SECRET", "FRONTEND_URL",
         "SSL_STORE_ID",
         "SSL_STORE_PASS",
-        "SSL_PAYMENT_API", 
+        "SSL_PAYMENT_API",
         "SSL_VALIDATION_API",
         "SSL_SUCCESS_FRONTEND_URL",
         "SSL_FAIL_FRONTEND_URL",
@@ -48,6 +53,9 @@ const loadEnvVariables = (): EnvConfig => {
         "SSL_SUCCESS_BACKEND_URL",
         "SSL_FAIL_BACKEND_URL",
         "SSL_CANCEL_BACKEND_URL",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
         // " SSL_IPN_URL"
     ]
     requiredEnvVariables.forEach(key => {
@@ -84,9 +92,15 @@ const loadEnvVariables = (): EnvConfig => {
             SSL_CANCEL_FRONTEND_URL: process.env.SSL_CANCEL_FRONTEND_URL as string,
             SSL_SUCCESS_BACKEND_URL: process.env.SSL_SUCCESS_BACKEND_URL as string,
             SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
-            SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string,
+            SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string
             // SSL_IPN_URL: process.env.SSL_IPN_URL as string
         },
+        CLOUDINARY: {
+            CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+            CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+            CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+        },
+
     }
 
 }
