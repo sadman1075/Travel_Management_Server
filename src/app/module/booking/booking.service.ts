@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import AppError from "../../errorHelpers/AppError"
 import { User } from "../user/user.model"
 import { BOOKING_STATUS, IBooking } from "./booking.interface"
@@ -7,6 +8,8 @@ import { Payment } from "../payment/payment.model"
 import { PAYMENT_STATUS } from "../payment/payment.interface"
 import { Tour } from "../tour/tour.model"
 import { JwtPayload } from "jsonwebtoken"
+import { sslService } from "../sslCommerz/sslCommerz.service"
+import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface"
 
 const getTransactionId = () => {
     return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
@@ -48,20 +51,42 @@ const createBooking = async (payload: Partial<IBooking>, decodedToken: JwtPayloa
             transactionId: transactionId,
             amount: amount
 
-        }],{session})
+        }], { session })
 
         const updatedBooking = await Booking.findByIdAndUpdate(
             booking[0]._id,
             { payment: payment[0]._id },
-            { new: true ,session},
+            { new: true, session },
         )
             .populate("user", "name email phone address")
             .populate("tour", "title costFrom")
             .populate("payment")
+
+
+        const address = (updatedBooking?.user as any).address
+        const email = (updatedBooking?.user as any).email
+        const phone = (updatedBooking?.user as any).phone
+        const name = (updatedBooking?.user as any).name
+
+        const sslPayload: ISSLCommerz = {
+            address: address,
+            email: email,
+            phoneNumber: phone,
+            name: name,
+            amount: amount,
+            transactionId: transactionId
+
+        }
+
+        const sslPayment = await sslService.sslPaymentInit(sslPayload)
+
         await session.commitTransaction();
         session.endSession()
-
-        return updatedBooking
+console.log(sslPayment);
+        return {
+            booking: updatedBooking,
+            payment: sslPayment.GatewayPageURL
+        }
     } catch (error) {
         await session.abortTransaction()
         session.endSession()
