@@ -2,11 +2,16 @@ import { JwtPayload } from "jsonwebtoken";
 import { sendResponse } from "../../utils/sendResponse";
 import { BookingService } from "./booking.service";
 import { Request, Response } from "express";
+import { verifyToken } from "../../utils/jwt";
+import { envVars } from "../../config/env";
 
 
 const createBooking = async (req: Request, res: Response) => {
-    const decodeToken = req.user as JwtPayload
-    const booking = await BookingService.createBooking(req.body, decodeToken.userId);
+    const decodeToken = req.headers.authorization
+
+    const verifiedToken = verifyToken(decodeToken as string, envVars.JWT_ACCESS_SECRET)
+
+    const booking = await BookingService.createBooking(req.body, verifiedToken as JwtPayload);
     sendResponse(res, {
         statusCode: 201,
         success: true,

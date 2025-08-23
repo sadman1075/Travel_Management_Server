@@ -5,7 +5,7 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import { createBookingZodSchema } from "./booking.validation";
 import { BookingController } from "./booking.controller";
 
-const bookingRoutes = Router()
+export const bookingRoutes = Router()
 
 bookingRoutes.post("/",
      checkAuth(...Object.values(Role)), 

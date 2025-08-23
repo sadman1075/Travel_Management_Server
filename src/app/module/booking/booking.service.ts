@@ -6,45 +6,68 @@ import { Booking } from "./booking.model"
 import { Payment } from "../payment/payment.model"
 import { PAYMENT_STATUS } from "../payment/payment.interface"
 import { Tour } from "../tour/tour.model"
+import { JwtPayload } from "jsonwebtoken"
 
 const getTransactionId = () => {
     return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
 }
 
-const createBooking = async (payload: Partial<IBooking>, userId: string) => {
-    const isUserExists = await User.findById(userId)
+const createBooking = async (payload: Partial<IBooking>, decodedToken: JwtPayload) => {
+
+
+
     const transactionId = getTransactionId()
-    const tour = await Tour.findById(payload.tour).select("costFrom")
-    if (!tour?.costFrom) {
-        throw new AppError(httpstatus.BAD_REQUEST, "not tour cost found")
+    const session = await Booking.startSession();
+    session.startTransaction()
+
+
+    try {
+        const isUserExists = await User.findById(decodedToken.userId)
+        const tour = await Tour.findById(payload.tour).select("costFrom")
+        if (!tour?.costFrom) {
+            throw new AppError(httpstatus.BAD_REQUEST, "not tour cost found")
+        }
+
+        if (!isUserExists?.phone || !isUserExists?.address) {
+            throw new AppError(httpstatus.BAD_REQUEST, "please update your profile to book a tour")
+        }
+
+        const amount = Number(tour.costFrom) * Number(payload.guestCount!);
+
+        const booking = await Booking.create([{
+            user: decodedToken.userId,
+            status: BOOKING_STATUS.PENDING,
+            ...payload,
+
+        }], { session })
+
+
+        const payment = await Payment.create([{
+            booking: booking[0]._id,
+            status: PAYMENT_STATUS.UNPAID,
+            transactionId: transactionId,
+            amount: amount
+
+        }],{session})
+
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            booking[0]._id,
+            { payment: payment[0]._id },
+            { new: true ,session},
+        )
+            .populate("user", "name email phone address")
+            .populate("tour", "title costFrom")
+            .populate("payment")
+        await session.commitTransaction();
+        session.endSession()
+
+        return updatedBooking
+    } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
+        throw error
     }
-    if (!isUserExists?.phone || !isUserExists?.address) {
-        throw new AppError(httpstatus.BAD_REQUEST, "please update your profile to book a four")
-    }
 
-    const amount = Number(tour.costFrom) * Number(payload.guestCount!);
-
-    const booking = await Booking.create({
-        user: userId,
-        status: BOOKING_STATUS.PENDING,
-        ...payload
-    })
-
-
-    const payment = await Payment.create({
-        booking: booking._id,
-        status: PAYMENT_STATUS.UNPAID,
-        transactionId: transactionId,
-        amount: amount
-
-    })
-
-    const updatedBooking = await Booking.findByIdAndUpdate(
-        booking._id,
-        { payment: payment._id },
-        { new: true },
-    )
-    return updatedBooking
 }
 const getUserBooking = async () => {
     return {}

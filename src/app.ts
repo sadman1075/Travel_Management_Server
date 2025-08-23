@@ -11,6 +11,7 @@ import { envVars } from "./app/config/env";
 import "./app/config/passport"
 import { divisionRoutes } from "./app/module/division/division.route";
 import { tourRoutes } from "./app/module/tour/tour.route";
+import { bookingRoutes } from "./app/module/booking/booking.route";
 
 
 const app = express()
@@ -34,6 +35,7 @@ app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/division",divisionRoutes)
 app.use("/api/v1/tour",tourRoutes)
 app.use("/api/v1/tour",tourRoutes)
+app.use("/api/v1/booking",bookingRoutes)
 
 app.get("/", async (req, res) => {
     res.send("server is running man")
