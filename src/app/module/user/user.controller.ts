@@ -70,7 +70,7 @@ const getMe = async (req: Request, res: Response, next: NextFunction) => {
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
-            message: "user successfully retrived ",
+            message: "profile successfully retrived ",
             data: result
         })
     } catch (error) {
