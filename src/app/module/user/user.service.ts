@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
@@ -18,8 +19,8 @@ const createUser = async (payload: IUser) => {
     return create
 }
 
-const updateUser = async (userId: string,payload: IUser, decodedToken: JwtPayload) => {
-  
+const updateUser = async (userId: string, payload: IUser, decodedToken: JwtPayload) => {
+
 
     if (payload.role) {
         if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
@@ -32,7 +33,7 @@ const updateUser = async (userId: string,payload: IUser, decodedToken: JwtPayloa
     }
 
     const isUserExist = await User.findById(userId)
-    
+
     if (!isUserExist) {
         throw new AppError(httpstatus.FORBIDDEN, "User not found");
 
@@ -50,19 +51,28 @@ const updateUser = async (userId: string,payload: IUser, decodedToken: JwtPayloa
 
     const updateUserInfo = await User.findByIdAndUpdate(userId, payload, { new: true })
     console.log(updateUserInfo);
-    
+
 }
 
 const getAllUser = async () => {
-    const allUsers = await User.find({})
-    return allUsers
+    try {
+        const allUsers = await User.find({})
+        return allUsers
+    } catch (error: any) {
+        throw new AppError(400, "user not found", error.message)
+    }
+}
+const getMe = async (payload: JwtPayload) => {
+    const user = await User.findById(payload.userId).select("-password")
+    return user
 }
 
 
 export const userService = {
     createUser,
     getAllUser,
-    updateUser
+    updateUser,
+    getMe
 }
 
 

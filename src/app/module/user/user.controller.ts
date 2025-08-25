@@ -61,6 +61,22 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+const getMe = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const decodedToken=req.headers.authorization ;
+        const verifiedToken=await verifyToken(decodedToken as string,envVars.JWT_ACCESS_SECRET)
+        const result = await userService.getMe(verifiedToken)
+        
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user successfully retrived ",
+            data: result
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 
@@ -69,5 +85,6 @@ export const userController = {
     createUser,
     getAllUser,
     updateUser,
+    getMe
     
 }
