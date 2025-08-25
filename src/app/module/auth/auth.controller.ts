@@ -86,6 +86,48 @@ const resetPassword = async (req: Request, res: Response, next: NextFunction) =>
     }
 
 }
+const setPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { password } = req.body
+
+        const decodedToken = req.headers.authorization
+        const verifiedToken = verifyToken(decodedToken as string, envVars.JWT_ACCESS_SECRET)
+        console.log(verifiedToken.userId);
+
+        await authService.setPassword(verifiedToken.userId, password)
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "password set successfully",
+            data: true
+        })
+    } catch (err) {
+        next(err)
+    }
+
+}
+const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const oldPassword = req.body.oldPassword
+        const newPassword = req.body.newPassword
+        const decodedToken = req.headers.authorization
+        const verifiedToken = verifyToken(decodedToken as string, envVars.JWT_ACCESS_SECRET)
+
+
+
+        const updatePassword = await authService.changePassword(oldPassword, newPassword, verifiedToken as JwtPayload)
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.CREATED,
+            message: "user created successfully",
+            data: true
+        })
+    } catch (err) {
+        next(err)
+    }
+
+}
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -144,6 +186,8 @@ export const authController = {
     credetialsLogin,
     getNewAccessToken,
     resetPassword,
+    setPassword,
+    changePassword,
     googleCallBack,
     logout
 }

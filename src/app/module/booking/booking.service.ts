@@ -10,10 +10,9 @@ import { Tour } from "../tour/tour.model"
 import { JwtPayload } from "jsonwebtoken"
 import { sslService } from "../sslCommerz/sslCommerz.service"
 import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface"
+import { getTransactionId } from "../../utils/getTransactionId"
 
-const getTransactionId = () => {
-    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-}
+
 
 const createBooking = async (payload: Partial<IBooking>, decodedToken: JwtPayload) => {
 

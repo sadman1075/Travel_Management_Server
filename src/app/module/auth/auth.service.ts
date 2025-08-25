@@ -1,5 +1,5 @@
 import AppError from "../../errorHelpers/AppError"
-import { IsActive } from "../user/user.interface"
+import { IAuthProvider, IsActive } from "../user/user.interface"
 import { User } from "../user/user.model"
 import httpstatus from "http-status-codes"
 import bcryptjs from "bcryptjs"
@@ -67,9 +67,52 @@ const getNewAccessToken = async (refreshToken: string) => {
 
 
 const resetPassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
-    
+
     const user = await User.findById(decodedToken.userId)
-    
+
+
+    const isOldPassword = await bcryptjs.compare(oldPassword, user?.password as string)
+    if (!isOldPassword) {
+        throw new AppError(httpstatus.BAD_REQUEST, "password is not matched")
+
+    }
+
+    user!.password = await bcryptjs.hash(newPassword, Number(envVars.BCRYPT_SALT_ROUND))
+    user!.save()
+
+    return true
+
+
+}
+const setPassword = async (userId: string, plainPassword: string) => {
+    const user = await User.findById(userId)
+    if (!user) {
+        throw new AppError(404, "user not found")
+    }
+
+    if (user.password && user.auths.some(providerObject => providerObject.provider === "google")) {
+        throw new AppError(httpstatus.BAD_REQUEST, "you have already set your password .now you can change password from your profilepassword update")
+    }
+
+    const hashPassword = await bcryptjs.hash(plainPassword, Number(envVars.BCRYPT_SALT_ROUND))
+    const credentialProvider: IAuthProvider = {
+        provider: "credentials",
+        providerId: user.email
+    }
+    const auhts: IAuthProvider[] = [...user.auths, credentialProvider]
+
+    user.password=hashPassword
+    user.auths=auhts
+
+    await user.save()
+
+    return {}
+
+}
+const changePassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
+
+    const user = await User.findById(decodedToken.userId)
+
 
     const isOldPassword = await bcryptjs.compare(oldPassword, user?.password as string)
     if (!isOldPassword) {
@@ -93,7 +136,9 @@ const resetPassword = async (oldPassword: string, newPassword: string, decodedTo
 
 
 export const authService = {
-    
+
     getNewAccessToken,
-    resetPassword
+    resetPassword,
+    setPassword,
+    changePassword
 }

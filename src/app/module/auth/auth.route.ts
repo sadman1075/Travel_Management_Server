@@ -11,6 +11,8 @@ authRoutes.post("/login", authController.credetialsLogin)
 authRoutes.post("/refresh-token", authController.getNewAccessToken)
 authRoutes.post("/logout", authController.logout)
 authRoutes.post("/reset-password", checkAuth(...Object.values(Role)), authController.resetPassword)
+authRoutes.post("/set-password", checkAuth(...Object.values(Role)), authController.setPassword)
+authRoutes.post("/change-password", checkAuth(...Object.values(Role)), authController.resetPassword)
 authRoutes.get("/google",(req:Request,res:Response,next:NextFunction)=>{
     const redirect=req.query.redirect||"/"
     passport.authenticate("google",{scope:["profile","email"],state:redirect as string})(req,res,next)

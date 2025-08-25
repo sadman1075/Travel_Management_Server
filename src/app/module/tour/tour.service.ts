@@ -1,5 +1,6 @@
 
 // import { deleteImageFromCLoudinary } from "../../config/cloudinary.config";
+import { deleteImageFromCLoudinary } from "../../config/cloudinary.config";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { tourSearchableFields, tourTypeSearchableFields } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";
@@ -169,9 +170,9 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
 
-    // if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
-    //     await Promise.all(payload.deleteImages.map(url => deleteImageFromCLoudinary(url)))
-    // }
+    if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
+        await Promise.all(payload.deleteImages.map(url => deleteImageFromCLoudinary(url)))
+    }
 
     return updatedTour;
 };
@@ -219,6 +220,8 @@ const updateTourType = async (id: string, payload: ITourType) => {
         throw new Error("Tour type not found.");
     }
 
+    
+
     const updatedTourType = await TourType.findByIdAndUpdate(id, payload, { new: true });
     return updatedTourType;
 };
@@ -227,6 +230,7 @@ const deleteTourType = async (id: string) => {
     if (!existingTourType) {
         throw new Error("Tour type not found.");
     }
+    
 
     return await TourType.findByIdAndDelete(id);
 };
