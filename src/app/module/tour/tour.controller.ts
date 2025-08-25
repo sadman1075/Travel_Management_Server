@@ -9,7 +9,7 @@ const createTour = async (req: Request, res: Response, next: NextFunction) => {
        
         const payload: ITour = {
             ...req.body,
-            // images: (req.files as Express.Multer.File[]).map(file => file.path)
+            images: (req.files as Express.Multer.File[]).map(file => file.path)
         }
         const result = await TourService.createTour(payload);
         
@@ -59,7 +59,7 @@ const updateTour = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payload: ITour = {
             ...req.body,
-            // images: (req.files as Express.Multer.File[]).map(file => file.path)
+            images: (req.files as Express.Multer.File[]).map(file => file.path)
         }
         const result = await TourService.updateTour(req.params.id, payload);
         sendResponse(res, {
