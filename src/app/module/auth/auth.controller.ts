@@ -67,19 +67,18 @@ const getNewAccessToken = async (req: Request, res: Response, next: NextFunction
 }
 const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const oldPassword = req.body.oldPassword
-        const newPassword = req.body.newPassword
+
+
         const decodedToken = req.headers.authorization
         const verifiedToken = verifyToken(decodedToken as string, envVars.JWT_ACCESS_SECRET)
 
-
-
-        const updatePassword = await authService.resetPassword(oldPassword, newPassword, verifiedToken as JwtPayload)
+        await authService.resetPassword(req.body, verifiedToken as JwtPayload)
+        
         sendResponse(res, {
             success: true,
-            statusCode: httpstatus.CREATED,
-            message: "user created successfully",
-            data: true
+            statusCode: httpstatus.OK,
+            message: "Password Changed Successfully",
+            data: null,
         })
     } catch (err) {
         next(err)
@@ -127,6 +126,20 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
         next(err)
     }
 
+}
+const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+
+
+    const { email } = req.body;
+
+    await authService.forgotPassword(email);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "Email Sent Successfully",
+        data: null,
+    })
 }
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -187,6 +200,7 @@ export const authController = {
     getNewAccessToken,
     resetPassword,
     setPassword,
+    forgotPassword,
     changePassword,
     googleCallBack,
     logout

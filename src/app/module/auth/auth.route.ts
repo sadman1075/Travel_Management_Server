@@ -13,7 +13,7 @@ authRoutes.post("/logout", authController.logout)
 authRoutes.post("/reset-password", checkAuth(...Object.values(Role)), authController.resetPassword)
 authRoutes.post("/set-password", checkAuth(...Object.values(Role)), authController.setPassword)
 authRoutes.post("/change-password", checkAuth(...Object.values(Role)), authController.resetPassword)
-authRoutes.post("/forgot-password", checkAuth(...Object.values(Role)), authController.resetPassword)
+authRoutes.post("/forgot-password", authController.forgotPassword)
 authRoutes.get("/google",(req:Request,res:Response,next:NextFunction)=>{
     const redirect=req.query.redirect||"/"
     passport.authenticate("google",{scope:["profile","email"],state:redirect as string})(req,res,next)

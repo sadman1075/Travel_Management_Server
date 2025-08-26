@@ -90,9 +90,9 @@ passport.use(
                 return done("User is deleted")
             }
 
-            if (!isUserExist.isVerified) {
-                return done("user is not verified")
-            }
+            // if (!isUserExist.isVerified) {
+            //     return done("user is not verified")
+            // }
 
             const isGoogleAuthenticated = isUserExist.auths.some(providerObjects => providerObjects.provider == "google")
 
