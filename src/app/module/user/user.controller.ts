@@ -37,7 +37,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.CREATED,
-            message: "user created successfully",
+            message: "user updated successfully",
             data: update
         })
 

@@ -20,15 +20,9 @@ const createUser = async (payload: IUser) => {
 }
 
 const updateUser = async (userId: string, payload: IUser, decodedToken: JwtPayload) => {
-
-
-    if (payload.role) {
-        if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
-            throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
-        }
-        if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
-            throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
-
+    if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+        if (userId !== decodedToken.userId) {
+            throw new AppError(401, "You are not authorized")
         }
     }
 
@@ -39,18 +33,32 @@ const updateUser = async (userId: string, payload: IUser, decodedToken: JwtPaylo
 
     }
 
+    if (decodedToken.role === Role.ADMIN && isUserExist.role === Role.SUPER_ADMIN) {
+        throw new AppError(401, "You are not authorized")
+    }
+
+    if (payload.role) {
+
+        if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+            throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
+        }
+        if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
+            throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
+
+        }
+    }
+
     if (payload.isActive || payload.isDeleted || payload.isVerified) {
         if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
             throw new AppError(httpstatus.FORBIDDEN, "You are not authorized");
         }
     }
 
-
     const hashpassword = await bcryptjs.hash(isUserExist.password as string, Number(envVars.BCRYPT_SALT_ROUND))
     payload.password = hashpassword;
 
-    const updateUserInfo = await User.findByIdAndUpdate(userId, payload, { new: true })
-    console.log(updateUserInfo);
+    const updateUserInfo = await User.findByIdAndUpdate(userId, payload, { new: true, runValidators: true })
+    return updateUserInfo
 
 }
 
