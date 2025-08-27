@@ -70,6 +70,14 @@ const getAllUser = async () => {
         throw new AppError(400, "user not found", error.message)
     }
 }
+
+const getSingleUser = async (id: string) => {
+    const user = await User.findById(id).select("-password");
+    return {
+        data: user
+    }
+};
+
 const getMe = async (payload: JwtPayload) => {
     const user = await User.findById(payload.userId).select("-password")
     return user
@@ -80,6 +88,7 @@ export const userService = {
     createUser,
     getAllUser,
     updateUser,
+    getSingleUser,
     getMe
 }
 

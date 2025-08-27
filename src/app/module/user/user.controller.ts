@@ -61,6 +61,18 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+
+const getSingleUser = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await userService.getSingleUser(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.CREATED,
+        message: "User Retrieved Successfully",
+        data: result.data
+    })
+}
+
 const getMe = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const decodedToken=req.headers.authorization ;
@@ -85,6 +97,7 @@ export const userController = {
     createUser,
     getAllUser,
     updateUser,
+    getSingleUser,
     getMe
     
 }
