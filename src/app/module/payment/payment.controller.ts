@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import { PaymentService } from "./payment.service";
 import { envVars } from "../../config/env";
+import { sslService } from "../sslCommerz/sslCommerz.service";
 
 
 const initPayment = async (req: Request, res: Response) => {
@@ -52,7 +53,7 @@ const getInvoiceDownloadUrl =
     };
 const validatePayment =
     async (req: Request, res: Response) => {
-
+ await sslService.validatePayment(req.body)
         sendResponse(res, {
             statusCode: 200,
             success: true,

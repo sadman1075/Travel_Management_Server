@@ -2,8 +2,8 @@
 // controllers/stats.controller.ts
 import { Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
-import { statsService } from "./stats.service";
 import AppError from "../../errorHelpers/AppError";
+import { statsService } from "./stats.service";
 
 const getBookingStats = async (req: Request, res: Response) => {
     try {

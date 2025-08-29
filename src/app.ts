@@ -14,6 +14,7 @@ import { tourRoutes } from "./app/module/tour/tour.route";
 import { bookingRoutes } from "./app/module/booking/booking.route";
 import { paymentRoutes } from "./app/module/payment/payment.route";
 import { otpRoutes } from "./app/module/otp/otp.route";
+import { statsroutes } from "./app/module/stats/stats.route";
 
 
 const app = express()
@@ -46,6 +47,7 @@ app.use("/api/v1/tour", tourRoutes)
 app.use("/api/v1/payment", paymentRoutes)
 app.use("/api/v1/booking", bookingRoutes)
 app.use("/api/v1/otp", otpRoutes)
+app.use("/api/v1/stats", statsroutes)
 
 app.get("/", async (req, res) => {
     res.send("server is running man")
